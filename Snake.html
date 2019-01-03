@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Snake</title>
+</head>
+<body style="text-align:center;margin:100px;background-color:#aaaaaa">
+<canvas id="canv" width="400" height="400" style="background-color:gray">
+</canvas>
+<script>
+// Variables
+var box=document.getElementById('canv').getContext('2d');
+var snake;
+var start_pos; // Position of Snake's head
+var direction; // -20(Up), 20(Down), -1(Left), 1(Right)
+var n; // Move
+var candy;
+
+// Draw
+function draw(point,color) {
+box.fillStyle=color;
+box.fillRect(point%20*20+1,~~(point/20)*20+1,18,18);
+}
+
+(function(){ready();}());
+
+function ready() {
+// Grid
+for(var i=0;i<400;i++) {
+draw(i,"#313131");
+}
+// Positions of snake and candy
+while(true){
+start_pos=~~(Math.random()*400);
+candy=~~(Math.random()*400);
+if(start_pos%20>3&&start_pos%20<10&&candy%20>10&&Math.abs(start_pos-candy)>40) {break;}
+}
+snake=[start_pos,start_pos-1,start_pos-2];
+direction=1;
+draw(candy,"yellow");
+draw(start_pos,"#a30000");
+draw(start_pos-1,"#00b7ee");
+draw(start_pos-2,"#00b7ee");
+}
+
+// Core Algorithm
+function run() {
+document.getElementById("butn").setAttribute("disabled",true);
+document.getElementById("credit").setAttribute("disabled",true);
+var s_length=snake.unshift(n=snake[0]+direction);
+if(snake.indexOf(n,1)>0||n<0||n>399||(direction==-1&&n%20==19)||(direction==1&&n%20==0))
+{ready();
+document.getElementById("butn").removeAttribute("disabled");
+document.getElementById("credit").removeAttribute("disabled");
+return alert("Game Over! You received "+(s_length-4)+" candy.");}
+draw(n,"#a30000");
+draw(snake[1],"#00b7ee");
+if(n==candy)
+{while(snake.indexOf(candy=~~(Math.random()*400))>=0);
+draw(candy,"yellow");
+}
+else{draw(snake.pop(),"#313131");}
+setTimeout(arguments.callee,200);
+}
+
+function creator() {
+return alert("Creator: Yidong Liu");
+}
+
+// Keyboard Events
+document.onkeydown=function(e) {
+if(direction==1||direction==-1) {
+// Up
+if(e.keyCode==38)
+{direction=-20;}
+// Down
+if(e.keyCode==40)
+{direction=20;}
+}
+if(direction==20||direction==-20) {
+// Left
+if(e.keyCode==37)
+{direction=-1;}
+// Right
+if(e.keyCode==39)
+{direction=1;}
+}}
+
+</script>
+<div>
+<button id="butn" type="button" onclick="run()">Start Game!</button>
+<button id="credit" type="button" onclick="creator()">Index</button>
+</div>
+</body>
+</html>
